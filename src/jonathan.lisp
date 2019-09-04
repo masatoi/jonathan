@@ -27,6 +27,7 @@
                 :*null-value*
                 :*empty-object-value*
                 :*empty-array-value*
+                :*array-as-vector-p*
                 :parse)
   (:import-from :jonathan.helper
                 :with-output-to-string*
@@ -41,6 +42,7 @@
            :*null-value*
            :*empty-object-value*
            :*empty-array-value*
+           :*array-as-vector-p*
            :<jonathan-error>
            :<jonathan-unexpected-eof-error>
            :<jonathan-incomplete-json-error>

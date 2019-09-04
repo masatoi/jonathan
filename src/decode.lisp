@@ -9,6 +9,7 @@
            :*null-value*
            :*empty-object-value*
            :*empty-array-value*
+           :*array-as-vector-p*
            :parse))
 (in-package :jonathan.decode)
 
@@ -29,6 +30,10 @@
 @doc
 "LISP value of []."
 (defvar *empty-array-value* nil)
+
+@doc
+"When it's true, convert JSON Array to Lisp Vector."
+(defvar *array-as-vector-p* nil)
 
 (defmacro make-normalizer (keywords)
   (let ((normalizer-block (gensym)))
@@ -252,10 +257,13 @@
                          finally (return result)))
                  (read-array (&optional skip-p)
                    (skip-spaces)
-                   (or (loop until (skip?-or-eof #\])
-                             collect (dispatch skip-p)
-                             do (with-skip-spaces (skip? #\,)))
-                       *empty-array-value*))
+                   (let ((array (or (loop until (skip?-or-eof #\])
+                                          collect (dispatch skip-p)
+                                          do (with-skip-spaces (skip? #\,)))
+                                    *empty-array-value*)))
+                     (if *array-as-vector-p*
+                         (coerce array 'vector)
+                         array)))
                  (read-number (&optional skip-p)
                    (if skip-p
                        (tagbody
